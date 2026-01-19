@@ -1,18 +1,11 @@
-<![CDATA[<div align="center">
-
 # 🧪 LLM Evaluation Harness
 
 **Production-ready framework for systematic LLM testing, regression detection, and quality assurance**
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776ab.svg?logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Tests](https://github.com/ArivunidhiA/LLM-Evaluation-Harness/actions/workflows/test.yml/badge.svg)](https://github.com/ArivunidhiA/LLM-Evaluation-Harness/actions)
-
-[Features](#-features) • [Quick Start](#-quick-start) • [Architecture](#-architecture) • [API](#-api-reference) • [CLI](#-cli-usage)
-
-</div>
+![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776ab.svg?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 ---
 
@@ -35,6 +28,7 @@
 LLM Evaluation Harness is a comprehensive testing framework designed to **evaluate, benchmark, and monitor LLM outputs at scale**. It enables teams to catch quality regressions before deployment, measure model performance across diverse test suites, and maintain consistent output quality over time.
 
 **Key Highlights:**
+
 - ⚡ Evaluate **1000+ test cases in under 10 minutes** with async concurrency
 - 📊 Generate **professional HTML reports** with Plotly visualizations
 - 🔄 **Regression detection** against versioned baselines
@@ -56,37 +50,35 @@ LLM Evaluation Harness is a comprehensive testing framework designed to **evalua
 ## 🏗 Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         LLM EVAL HARNESS                            │
-├─────────────────────────────────────────────────────────────────────┤
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐      │
-│  │   CLI    │    │   API    │    │ Reporter │    │ Metrics  │      │
-│  │ (Typer)  │    │(FastAPI) │    │  (HTML)  │    │  Engine  │      │
-│  └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘      │
-│       │               │               │               │             │
-│       └───────────────┼───────────────┼───────────────┘             │
-│                       ▼                                             │
-│              ┌─────────────────┐                                    │
-│              │    Evaluator    │◄──── Test Cases (JSON)             │
-│              │   (Orchestrator)│                                    │
-│              └────────┬────────┘                                    │
-│                       │                                             │
-│              ┌────────▼────────┐                                    │
-│              │  Async Executor │                                    │
-│              │ ┌─────────────┐ │                                    │
-│              │ │Rate Limiter │ │                                    │
-│              │ │Circuit Break│ │                                    │
-│              │ │Retry Logic  │ │                                    │
-│              │ └─────────────┘ │                                    │
-│              └────────┬────────┘                                    │
-│                       │                                             │
-├───────────────────────┼─────────────────────────────────────────────┤
-│  EXTERNAL             ▼                                             │
-│  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐         │
-│  │ OpenAI   │   │PostgreSQL│   │  Redis   │   │ Sentry   │         │
-│  │   API    │   │    DB    │   │  Cache   │   │  Errors  │         │
-│  └──────────┘   └──────────┘   └──────────┘   └──────────┘         │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                      LLM EVAL HARNESS                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌───────┐   ┌───────┐   ┌──────────┐   ┌─────────┐           │
+│   │  CLI  │   │  API  │   │ Reporter │   │ Metrics │           │
+│   │(Typer)│   │(Fast) │   │  (HTML)  │   │ Engine  │           │
+│   └───┬───┘   └───┬───┘   └────┬─────┘   └────┬────┘           │
+│       │           │            │              │                 │
+│       └───────────┴─────┬──────┴──────────────┘                 │
+│                         ▼                                       │
+│               ┌─────────────────┐                               │
+│               │    Evaluator    │◄─── Test Cases (JSON)         │
+│               └────────┬────────┘                               │
+│                        ▼                                        │
+│               ┌─────────────────┐                               │
+│               │  Async Executor │                               │
+│               │  • Rate Limiter │                               │
+│               │  • Circuit Break│                               │
+│               │  • Retry Logic  │                               │
+│               └────────┬────────┘                               │
+│                        │                                        │
+├────────────────────────┼────────────────────────────────────────┤
+│  EXTERNAL              ▼                                        │
+│  ┌────────┐   ┌────────┐   ┌───────┐   ┌────────┐              │
+│  │ OpenAI │   │Postgres│   │ Redis │   │ Sentry │              │
+│  │  API   │   │   DB   │   │ Cache │   │ Errors │              │
+│  └────────┘   └────────┘   └───────┘   └────────┘              │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 | Component | Responsibility |
@@ -116,6 +108,7 @@ LLM Evaluation Harness is a comprehensive testing framework designed to **evalua
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.11+
 - PostgreSQL 14+
 - Redis 7+
@@ -164,21 +157,15 @@ llm-eval results run123 --format table
 
 ```bash
 llm-eval <command> [options]
-
-Commands:
-  serve     Start the API server
-  run       Execute an evaluation suite
-  compare   Compare two runs for regressions
-  generate  Generate test cases using GPT-4
-  results   View run results
 ```
 
-| Command | Example |
-|---------|---------|
-| Start server | `llm-eval serve --port 8000` |
-| Run evaluation | `llm-eval run --suite summarization --workers 50` |
-| Compare runs | `llm-eval compare run123 run456 --output diff.html` |
-| Generate tests | `llm-eval generate --suite qa --count 300` |
+| Command | Example | Description |
+|---------|---------|-------------|
+| `serve` | `llm-eval serve --port 8000` | Start the API server |
+| `run` | `llm-eval run --suite summarization --workers 50` | Execute an evaluation suite |
+| `compare` | `llm-eval compare run123 run456 --output diff.html` | Compare two runs for regressions |
+| `generate` | `llm-eval generate --suite qa --count 300` | Generate test cases using GPT-4 |
+| `results` | `llm-eval results run123 --format table` | View run results |
 
 ---
 
@@ -195,6 +182,7 @@ Commands:
 | `/evaluate/compare` | POST | Compare two runs |
 
 **Example Request:**
+
 ```bash
 curl -X POST http://localhost:8000/evaluate/run \
   -H "Content-Type: application/json" \
@@ -219,25 +207,27 @@ All settings via environment variables (see `.env.example`):
 
 ## 🐳 Deployment
 
-```bash
-# Development
-docker-compose up -d
+### Docker Compose (Development)
 
-# Production (build and push)
+```bash
+docker-compose up -d
+```
+
+### Production Build
+
+```bash
 docker build -t llm-eval:latest .
 docker push ghcr.io/your-org/llm-eval:latest
 ```
 
-**CI/CD Workflows:**
-- `test.yml` — Run tests on every PR
-- `regression.yml` — Nightly regression tests with Slack alerts
-- `release.yml` — Build Docker image on tags
+### CI/CD Workflows
+
+| Workflow | Trigger | Action |
+|----------|---------|--------|
+| `test.yml` | Every PR | Run tests and linting |
+| `regression.yml` | Nightly | Regression tests + Slack alerts |
+| `release.yml` | Git tags | Build and push Docker image |
 
 ---
 
-<div align="center">
-
-**Built by [Arivunidhi A](https://github.com/ArivunidhiA)** • MIT License
-
-</div>
-]]>
+**Built by [Arivunidhi A](https://github.com/ArivunidhiA)** · MIT License
