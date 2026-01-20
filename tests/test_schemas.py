@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytest
 
-from llm_eval.schemas import TestCase, MetricResult, EvaluationRunConfig
+from llm_eval.schemas import EvaluationRunConfig, MetricResult, TestCase
 
 
 class TestTestCase:

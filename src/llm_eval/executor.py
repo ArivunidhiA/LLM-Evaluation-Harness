@@ -8,13 +8,17 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Awaitable, Callable, Deque, Iterable, TypeVar
 
-from tenacity import AsyncRetrying, RetryError, retry_if_exception_type, stop_after_attempt, wait_exponential
+import structlog
+from tenacity import (
+    AsyncRetrying,
+    RetryError,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from llm_eval.config import settings
 from llm_eval.logging import configure_logging
-
-import structlog
-
 
 configure_logging(settings.log_level)
 logger = structlog.get_logger(__name__)

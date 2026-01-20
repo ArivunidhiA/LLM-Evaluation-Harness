@@ -7,7 +7,6 @@ import uvicorn
 
 from llm_eval.api import app as api_app
 
-
 app = typer.Typer(add_completion=False)
 
 

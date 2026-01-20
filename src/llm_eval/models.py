@@ -24,11 +24,11 @@ class EvaluationRun(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     config_json: Mapped[dict] = mapped_column(JSON)
 
-    results: Mapped[list["TestResult"]] = relationship(back_populates="run", cascade="all, delete-orphan")
-
-    __table_args__ = (
-        Index("ix_evaluation_runs_started_at", "started_at"),
+    results: Mapped[list["TestResult"]] = relationship(
+        back_populates="run", cascade="all, delete-orphan"
     )
+
+    __table_args__ = (Index("ix_evaluation_runs_started_at", "started_at"),)
 
 
 class TestResult(Base):
@@ -48,9 +48,7 @@ class TestResult(Base):
 
     run: Mapped["EvaluationRun"] = relationship(back_populates="results")
 
-    __table_args__ = (
-        Index("ix_test_results_run_test", "run_id", "test_case_id"),
-    )
+    __table_args__ = (Index("ix_test_results_run_test", "run_id", "test_case_id"),)
 
 
 class Baseline(Base):
@@ -65,9 +63,7 @@ class Baseline(Base):
     baseline_metrics: Mapped[dict] = mapped_column(JSON)
     version: Mapped[str] = mapped_column(String(64), index=True)
 
-    __table_args__ = (
-        Index("ix_baselines_suite_version", "suite", "version"),
-    )
+    __table_args__ = (Index("ix_baselines_suite_version", "suite", "version"),)
 
 
 class Regression(Base):
@@ -84,6 +80,4 @@ class Regression(Base):
     current_score: Mapped[float] = mapped_column(Float)
     diff: Mapped[float] = mapped_column(Float)
 
-    __table_args__ = (
-        Index("ix_regressions_run_metric", "run_id", "metric_name"),
-    )
+    __table_args__ = (Index("ix_regressions_run_metric", "run_id", "metric_name"),)

@@ -4,12 +4,12 @@ import pytest
 
 from llm_eval.metrics import (
     AVAILABLE_METRICS,
+    BLEUMetric,
     ExactMatchMetric,
     LatencyMetric,
-    BLEUMetric,
+    MetricsEngine,
     ROUGEMetric,
     ToxicityMetric,
-    MetricsEngine,
 )
 from llm_eval.schemas import TestCase
 

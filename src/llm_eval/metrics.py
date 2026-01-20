@@ -244,8 +244,7 @@ class FormatValidationMetric(BaseMetric):
         elif expected_format == "code":
             # Basic syntax check - could be extended
             valid = not any(
-                err in output.lower()
-                for err in ["syntax error", "undefined", "traceback"]
+                err in output.lower() for err in ["syntax error", "undefined", "traceback"]
             )
 
         return MetricResult(
@@ -287,12 +286,8 @@ class BLEUMetric(BaseMetric):
 
         precisions = []
         for n in range(1, max_n + 1):
-            cand_ngrams = [
-                tuple(cand_tokens[i : i + n]) for i in range(len(cand_tokens) - n + 1)
-            ]
-            ref_ngrams = set(
-                tuple(ref_tokens[i : i + n]) for i in range(len(ref_tokens) - n + 1)
-            )
+            cand_ngrams = [tuple(cand_tokens[i : i + n]) for i in range(len(cand_tokens) - n + 1)]
+            ref_ngrams = set(tuple(ref_tokens[i : i + n]) for i in range(len(ref_tokens) - n + 1))
             if not cand_ngrams:
                 precisions.append(0.0)
                 continue
@@ -491,9 +486,7 @@ class MetricsEngine:
         >>> results = await engine.compute(test_case, output, prompt, 150)
     """
 
-    def __init__(
-        self, enabled_metrics: List[str], client: Optional[AsyncOpenAI] = None
-    ) -> None:
+    def __init__(self, enabled_metrics: List[str], client: Optional[AsyncOpenAI] = None) -> None:
         self.enabled_metrics = enabled_metrics
         self.client = client
         self._metrics: Dict[str, BaseMetric] = self._initialize_metrics()

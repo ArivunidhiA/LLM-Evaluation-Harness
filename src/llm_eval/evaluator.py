@@ -8,17 +8,15 @@ import uuid
 from datetime import datetime, timezone
 from typing import Iterable, List
 
+import structlog
 from openai import AsyncOpenAI
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
 from llm_eval.config import settings
 from llm_eval.executor import AsyncExecutor
 from llm_eval.logging import configure_logging
 from llm_eval.metrics import MetricsEngine
 from llm_eval.schemas import EvaluationRunConfig, EvaluationRunResult, TestCase, TestResult
-
-import structlog
-
 
 configure_logging(settings.log_level)
 logger = structlog.get_logger(__name__)
@@ -126,9 +124,7 @@ class Evaluator:
             TaskProgressColumn(),
             transient=False,
         ) as progress:
-            task_id = progress.add_task(
-                f"[cyan]Evaluating {suite}", total=len(test_case_list)
-            )
+            task_id = progress.add_task(f"[cyan]Evaluating {suite}", total=len(test_case_list))
             tasks = [lambda tc=tc: _run_case(tc) for tc in test_case_list]
 
             try:

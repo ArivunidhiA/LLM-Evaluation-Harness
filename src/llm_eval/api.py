@@ -6,7 +6,6 @@ from fastapi import FastAPI, HTTPException
 
 from llm_eval.metrics import AVAILABLE_METRICS
 
-
 app = FastAPI(title="LLM Eval Harness")
 
 
