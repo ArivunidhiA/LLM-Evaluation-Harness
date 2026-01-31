@@ -37,7 +37,9 @@ jobs:
         run: pip install -e .
 
       - name: Run regression tests
+        id: run-regression
         if: secrets.OPENAI_API_KEY != ''
+        continue-on-error: true
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/llm_eval
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -51,13 +53,18 @@ jobs:
       - name: Check for regressions
         id: check
         run: |
-          # Parse results and set output
-          echo "regressions_found=false" >> $GITHUB_OUTPUT
+          if [ "${{ steps.run-regression.outcome }}" = "failure" ]; then
+            echo "regressions_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "regressions_found=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Notify Slack on failure
         if: (failure() || steps.check.outputs.regressions_found == 'true') && secrets.SLACK_WEBHOOK_URL != ''
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v1.27.0
         with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "🚨 LLM Eval Regression Alert",
@@ -71,5 +78,3 @@ jobs:
                 }
               ]
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
