@@ -37,11 +37,16 @@ jobs:
         run: pip install -e .
 
       - name: Run regression tests
+        if: secrets.OPENAI_API_KEY != ''
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/llm_eval
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           llm-eval run --suite regression --baseline v1.0 --workers 20
+
+      - name: Skip regression (no API key)
+        if: secrets.OPENAI_API_KEY == ''
+        run: echo "Skipping regression run: OPENAI_API_KEY not set in repository secrets."
 
       - name: Check for regressions
         id: check
@@ -50,7 +55,7 @@ jobs:
           echo "regressions_found=false" >> $GITHUB_OUTPUT
 
       - name: Notify Slack on failure
-        if: failure() || steps.check.outputs.regressions_found == 'true'
+        if: (failure() || steps.check.outputs.regressions_found == 'true') && secrets.SLACK_WEBHOOK_URL != ''
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
